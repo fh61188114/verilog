@@ -1,0 +1,43 @@
+                                         Design of a Traffic Light Controller
+ /*programmable values to red/yellow/green light.
+ TLC can be placed in various modes(blinking mde, high traffic mode, low traffic mode, manual mode).
+ has FF which stores the mode.
+ has FF which stores time value.(Configuration Registers-Read Write Registers)
+ has FF that indicates the status of the TLC, FF are implemented as Registers(Status Register-Read only).
+ 32 bits of FF constiture Register and each register has an unique address.
+ reg [31:0] mode_reg; // [31:3] reserved bits, [2:0] mode selection bits.
+ 
+ modes
+	mode = 000 => switched off mode
+	mode = 001 => high traffic mode
+	mode = 010 => low traffic mode
+	mode = 011 => manual mode
+	mode = 100 => blinking mode
+ 
+ reg [31:0] red_time_reg; // [7:0] : value, [31:8] : reserved
+ reg [31:0] green_time_reg; // [7:0] : value, [31:8] : reserved
+ reg [31:0] yellow_time_reg; // [7:0] : value, [31:8] : reserved
+
+ Addressing Registers
+ 	Byte Addressing
+ mode_reg => 8'h00 (00 to 03)
+ red_time_reg => 8'h04 (04 to 07)
+ yellow_time_reg => 8'h08 (08 to 0B)
+ green_time_reg => 8'h0C (0C to 0F)
+ status_reg => 8'h10 
+
+ to acces register, we need protocols(tell them how read/write will happen).
+ Protocols :
+ 	- on chip protocol
+		AXI, AHB, APB, OCP
+	- Peripheral communication protocols
+		USB, PCIe, UART, I2C.
+ APB Protocol:
+ 	paddres
+	pwite_data(read will come through 'prdata')
+	pwrite
+	penable
+	pready
+	psel  (master selects slave by enabling this/ tell slave to be ready)
+	pclk, prst.
+ */
