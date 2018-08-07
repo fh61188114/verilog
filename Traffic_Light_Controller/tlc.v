@@ -7,10 +7,10 @@ input pvalid;
 
 output reg [31:0] prdata;
 output reg pready;
-output reg state;
+output reg [2:0] state;
 
 //registers
-reg next_state;
+reg [2:0] next_state;
 reg [31:0] red_time_reg;     //2 values for time is stored. lower 16 for high traffic mode and higher 16 for low traffic mode.
 reg [31:0] yellow_time_reg;  
 reg [31:0] green_time_reg;
@@ -49,7 +49,7 @@ always @ (posedge pclk) begin
 		red_time_reg = 0;
 		green_time_reg = 0;
 		mode_reg = 0;
-		status_reg = 0;
+		status_reg = RED;
 		prdata = 0;
 		pready = 0;
 		next_state = RED;
@@ -93,32 +93,35 @@ always @ (posedge pclk) begin
 			if (mode_reg == BLINK) next_state = BLANK;
 			if (mode_reg == MANUAL) next_state = RED;
 			if (mode_reg == SWITCHOFF) next_state = OFF;
+			state = next_state ;
 		end
 		YELLOW : begin
 			if (mode_reg == HIGH) begin
-				#(red_time_reg[31:16]);
+				#(yellow_time_reg[31:16]);
 				next_state = GREEN;
 			end
 			if (mode_reg == LOW) begin
-				#(red_time_reg[15:0]);
+				#(yellow_time_reg[15:0]);
 				next_state = GREEN;
 			end
 			if (mode_reg == BLINK) next_state = BLANK;
 			if (mode_reg == MANUAL) next_state = RED;
 			if (mode_reg == SWITCHOFF) next_state = OFF;
+			state = next_state ;
 		end	
 		GREEN : begin
 			if (mode_reg == HIGH) begin
-				#(red_time_reg[31:16]);
+				#(green_time_reg[31:16]);
 				next_state = RED;
 			end
 			if (mode_reg == LOW) begin
-				#(red_time_reg[15:0]);
+				#(green_time_reg[15:0]);
 				next_state = RED;
 			end
 			if (mode_reg == BLINK) next_state = BLANK;
 			if (mode_reg == MANUAL) next_state = RED;
 			if (mode_reg == SWITCHOFF) next_state = OFF;
+			state = next_state ;
 		end
 		BLINK : begin	
 			if (mode_reg == HIGH) begin
@@ -130,6 +133,7 @@ always @ (posedge pclk) begin
 			if (mode_reg == BLINK) next_state = YELLOW;
 			if (mode_reg == MANUAL) next_state = RED;
 			if (mode_reg == SWITCHOFF) next_state = OFF;
+			state = next_state ;
 		end	
 		SWITCHOFF : begin
 			if (mode_reg == HIGH) begin
@@ -141,6 +145,7 @@ always @ (posedge pclk) begin
 			if (mode_reg == BLINK) next_state = BLANK;
 			if (mode_reg == MANUAL) next_state = RED;
 			if (mode_reg == SWITCHOFF) next_state = OFF;
+			state = next_state ;
 		end
 	endcase
 end
