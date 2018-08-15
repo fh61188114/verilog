@@ -51,13 +51,11 @@ always @ (posedge pclk) begin
 		begin
 			pready = 1;
 			if (wr_rd == 1)
+//writing to registers for setting cost of products.
 			begin
 				if (paddr == 16'h00) tea_cost = pwdata;
 				if (paddr == 16'h04) coffee_cost = pwdata;
 				if (paddr == 16'h08) milk_cost = pwdata;
-				/*if (paddr == 8'h0C) num_of_tea_reqd = pwdata;
-				if (paddr == 8'h10) num_of_coffee_reqd = pwdata;
-				if (paddr == 8'h14) num_of_milk_reqd = pwdata;*/
 		        end
 			else begin
 				if (paddr == 16'h00) prdata = tea_cost;
@@ -70,7 +68,7 @@ always @ (posedge pclk) begin
 		end
 	end
 end
-
+// design to determine cost of an order and deliver it.
 always @ (coin) begin
 		machine_ready = 1;
 		cost_of_products = (num_of_tea_reqd*tea_cost)+(num_of_coffee_reqd*coffee_cost)+(num_of_milk_reqd*milk_cost);
