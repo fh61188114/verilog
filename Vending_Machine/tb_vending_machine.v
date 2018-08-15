@@ -32,7 +32,7 @@ initial begin
 	repeat(2) @(posedge pclk) 
 	prst = 0;
 end
-
+// creating task to write/read to registers.
 task write_reg (input reg [15:0] addr, input reg [15:0] data);
 	begin
 		@ (posedge pclk);
@@ -59,14 +59,17 @@ task read_reg (input reg [15:0] addr, output reg [15:0] data);
 		pvalid = 0;
 	end
 endtask
-
+// instantiation
 initial begin
+// cost of products are fixed by design.
 	#5 write_reg(16'h00, 16'd150);
 	#30 write_reg(16'h04, 16'd175);
 	#35 write_reg(16'h08, 16'd125);
+// first order is placed.
 	num_of_tea_reqd = 3'd3; 
 	num_of_coffee_reqd = 3'd1; 
 	num_of_milk_reqd = 3'd1; 
+// coins are inserted.
 	#1 coin = 3'b001;
 	#2 coin = 3'b010;
 	#3 coin = 3'b001;
@@ -76,5 +79,6 @@ initial begin
 	#7 coin = 3'b001;
 	#8 coin = 3'b100;
 	#110 $finish;
+// further test cases can be checked.
 end
 endmodule
